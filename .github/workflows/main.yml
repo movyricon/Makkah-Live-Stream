@@ -1,0 +1,19 @@
+name: 24/7 Live Stream
+
+on:
+  schedule:
+    - cron: '0 */6 * * *' # Restarts every 6 hours automatically
+  workflow_dispatch:      # Allows you to start it manually
+
+jobs:
+  stream:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install FFmpeg
+        run: sudo apt update && sudo apt install ffmpeg -y
+
+      - name: Start Streaming
+        run: |
+          ffmpeg -re -i "wyk2-tk77-xtcv-gdk9-cckq" \
+          -c:v copy -c:a aac -ar 44100 -ab 128k -g 50 -strict -2 \
+          -f flv "rtmp://a.rtmp.youtube.com/live2/${{ secrets.YOUTUBE_STREAM_KEY }}"
