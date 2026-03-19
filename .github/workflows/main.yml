@@ -2,8 +2,8 @@ name: 24/7 Makkah Live Stream
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # Restarts every 6 hours automatically
-  workflow_dispatch:      # Allows you to start it manually
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
   stream:
@@ -16,5 +16,6 @@ jobs:
         run: |
           ffmpeg -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 5 \
           -re -i "https://win.hollystar.ch/saudisunnah/saudisunnah.smil/playlist.m3u8" \
-          -c:v copy -c:a aac -ar 44100 -ab 128k -g 50 -strict -2 \
+          -vcodec libx264 -preset veryfast -maxrate 2500k -bufsize 5000k \
+          -pix_fmt yuv420p -g 50 -c:a aac -ar 44100 -ab 128k \
           -f flv "rtmp://a.rtmp.youtube.com/live2/${{ secrets.YOUTUBE_STREAM_KEY }}"
